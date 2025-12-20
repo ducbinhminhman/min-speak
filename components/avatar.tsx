@@ -12,7 +12,7 @@ interface AvatarProps {
 export function Avatar({ state, size = "md" }: AvatarProps) {
   // Helper function to get correct GIF path
   const getAvatarSrc = (state: "idle" | "listening" | "speaking") => {
-    return `/avartar/${state}.gif`
+    return `/avatar/${state}.gif`
   }
 
   const sizeClasses = {

@@ -1,59 +1,43 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useRotatingPhrase } from "@/lib/utils"
 import { Button } from "./ui/button"
 
 interface HeroSectionProps {
   onModeSelect: (mode: "full" | "quick" | "conversation" | "live") => void
 }
 
+const PHRASES = [
+  "feeling, in new words",
+  "learn to express myself",
+  "I believe in myself",
+  "speak, gently",
+]
+
 export function HeroSection({ onModeSelect }: HeroSectionProps) {
-  const [currentPhraseIndex, setCurrentPhraseIndex] = useState(0)
-
-  const phrases = [
-    "feeling, in new words",
-    "learn to express myself",
-    "I believe in myself",
-    "speak, gently",
-  ]
-
-  // Simple phrase rotation every 4 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentPhraseIndex((prev) => (prev + 1) % phrases.length)
-    }, 4000)
-
-    return () => clearInterval(interval)
-  }, [phrases.length])
+  const currentPhrase = useRotatingPhrase(PHRASES, 4000)
 
   return (
-    <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-gradient-to-br from-stone-50 via-amber-50/30 to-orange-50/20">
-      {/* Subtle pattern background - CSS only */}
-      <div 
-        className="absolute inset-0 opacity-[0.03]" 
-        style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, rgb(120 113 108) 1px, transparent 0)`,
-          backgroundSize: '40px 40px'
-        }}
-      />
-
-      {/* Optional: Lotus image background (much lighter than video) */}
-      <div className="absolute inset-0 flex items-center justify-center opacity-20">
+    <div className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-stone-50 via-amber-50/30 to-orange-50/20">
+      {/* Watercolor Background */}
+      <div className="absolute inset-0">
         <div 
-          className="w-full h-full bg-center bg-no-repeat bg-contain"
+          className="w-full h-full bg-center bg-cover bg-no-repeat opacity-100"
           style={{
-            backgroundImage: "url('/avartar/lotus-bg.png')",
-            filter: "blur(2px)",
+            backgroundImage: "url('/hero.png')",
           }}
         />
       </div>
 
-      {/* Main Content */}
-      <div className="relative z-10 w-full max-w-2xl mx-auto px-6 py-12">
-        <div className="text-center space-y-8">
-          {/* Title - Thương */}
+      {/* Grid Container */}
+      <div className="relative z-10 min-h-screen grid grid-cols-4 md:grid-cols-12 gap-4 px-4 md:px-8 lg:px-12 items-center">
+        
+        {/* Content - Centered on grid */}
+        <div className="col-span-4 md:col-span-8 md:col-start-3 lg:col-span-6 lg:col-start-4 text-center space-y-6 md:space-y-8">
+          
+          {/* Title */}
           <h1 
-            className="text-7xl sm:text-8xl md:text-9xl font-serif font-bold tracking-tight animate-fade-in gradient-text"
+            className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-serif font-bold tracking-tight animate-fade-in gradient-text"
             style={{ fontFamily: "var(--font-cormorant)" }}
           >
             Thương
@@ -61,61 +45,52 @@ export function HeroSection({ onModeSelect }: HeroSectionProps) {
 
           {/* Rotating phrase */}
           <p 
-            className="text-2xl sm:text-3xl font-light text-stone-600 lowercase tracking-wide min-h-[2.5rem] animate-fade-in-delay transition-opacity duration-500"
-            key={currentPhraseIndex}
+            className="text-xl sm:text-2xl md:text-3xl font-light text-stone-600 lowercase tracking-wide min-h-[2rem] md:min-h-[2.5rem] animate-fade-in-delay transition-opacity duration-500"
+            key={currentPhrase}
           >
-            {phrases[currentPhraseIndex]}
+            {currentPhrase}
           </p>
 
-          {/* Action Buttons - Immediately visible */}
-          <div className="space-y-4 pt-6 animate-fade-in-delay-2">
+          {/* Buttons - Vertical stack */}
+          <div className="grid grid-cols-1 gap-4 pt-4 md:pt-6 animate-fade-in-delay-2">
             <Button
               onClick={() => onModeSelect("full")}
-              size="lg"
-              className="w-full h-14 text-base sm:text-lg font-semibold rounded-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 active:scale-95"
+              variant="default"
+              size="hero"
+              className="w-full"
             >
-              <span className="flex items-center justify-center gap-2">
-                <span>📚</span>
-                <span>Full Practice</span>
-              </span>
+              Full Practice
             </Button>
 
             <Button
               onClick={() => onModeSelect("quick")}
-              size="lg"
               variant="outline"
-              className="w-full h-14 text-base sm:text-lg font-semibold rounded-full bg-white/80 backdrop-blur-sm hover:bg-white border-2 border-stone-300 hover:border-amber-400 text-stone-800 shadow-lg hover:shadow-xl transition-all duration-300 active:scale-95"
+              size="hero"
+              className="w-full"
             >
-              <span className="flex items-center justify-center gap-2">
-                <span>⚡</span>
-                <span>Quick Translation</span>
-              </span>
+              Quick Translation
             </Button>
 
             <Button
               onClick={() => onModeSelect("conversation")}
-              size="lg"
               variant="outline"
-              className="w-full h-14 text-base sm:text-lg font-semibold rounded-full bg-gradient-to-r from-emerald-50 to-teal-50 hover:from-emerald-100 hover:to-teal-100 border-2 border-emerald-300 hover:border-emerald-400 text-stone-800 shadow-lg hover:shadow-xl transition-all duration-300 active:scale-95"
+              size="hero"
+              className="w-full"
             >
-              <span className="flex items-center justify-center gap-2">
-                <span>💬</span>
-                <span>Conversation Only</span>
-              </span>
+              Conversation Only
             </Button>
 
             <Button
               onClick={() => onModeSelect("live")}
-              size="lg"
-              className="w-full h-14 text-base sm:text-lg font-semibold rounded-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 active:scale-95"
+              variant="secondary"
+              size="hero"
+              className="w-full"
             >
-              <span className="flex items-center justify-center gap-2">
-                <span>🎙️</span>
-                <span>Live Chat (AI Agent)</span>
-              </span>
+              Live Chat
             </Button>
           </div>
         </div>
+
       </div>
     </div>
   )

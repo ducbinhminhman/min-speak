@@ -275,7 +275,7 @@ export function ConversationOnlyMode({ onEndSession, subMode }: ConversationOnly
 
   // Helper to get world avatar source
   const getWorldAvatarSrc = (state: "idle" | "listening" | "speaking") => {
-    return `/worldavartar/${state}.gif`
+    return `/worldavatar/${state}.gif`
   }
 
   // IMMERSIVE MODE: Fullscreen layout

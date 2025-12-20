@@ -151,7 +151,7 @@ export function LiveChatConversation({ onEndSession, subMode }: LiveChatConversa
       <div className="relative min-h-svh overflow-hidden bg-black">
         {/* Fullscreen Background Avatar */}
         <Image
-          src={`/worldavartar/${getAvatarState()}.gif`}
+          src={`/worldavatar/${getAvatarState()}.gif`}
           alt="AI Avatar"
           fill
           className="object-cover"
