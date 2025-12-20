@@ -1,0 +1,155 @@
+"use client"
+
+import { useState } from "react"
+import { LiveChatConversation } from "@/components/live-chat-conversation"
+import { ConversationAnalysisScreen } from "@/components/conversation-analysis-screen"
+import { ModeSelectionModal } from "@/components/mode-selection-modal"
+import { useRouter } from "next/navigation"
+
+interface Message {
+  role: "user" | "agent"
+  content: string
+  timestamp: Date
+}
+
+interface ConversationAnalysisData {
+  sentenceAnalysis: {
+    original: string
+    improved: string
+    issues: string[]
+    tips: string
+  }[]
+  overallStrengths: string[]
+  areasToImprove: {
+    area: string
+    explanation: string
+    examples: string[]
+  }[]
+  vocabularySuggestions: {
+    word: string
+    meaning: string
+    example: string
+    context: string
+  }[]
+  summary: string
+}
+
+export default function LiveChatPage() {
+  const router = useRouter()
+  const [currentScreen, setCurrentScreen] = useState<"modal" | "conversation" | "analysis">("modal")
+  const [subMode, setSubMode] = useState<"chat" | "immersive" | null>(null)
+  const [conversationAnalysisData, setConversationAnalysisData] = useState<ConversationAnalysisData | null>(null)
+  const [isGeneratingAnalysis, setIsGeneratingAnalysis] = useState(false)
+
+  const handleModeSelection = (mode: "chat" | "immersive") => {
+    setSubMode(mode)
+    setCurrentScreen("conversation")
+  }
+
+  const handleCancelModeSelection = () => {
+    router.push("/")
+  }
+
+  const handleEndSession = async (messages: Message[]) => {
+    // Check minimum length (at least 2 user messages for meaningful analysis)
+    const userMessages = messages.filter(msg => msg.role === "user")
+    
+    if (userMessages.length < 2) {
+      console.log("⚠️ [Live Chat] Too few messages for analysis, skipping...")
+      router.push("/")
+      return
+    }
+
+    console.log("📊 [Live Chat] Starting analysis with", userMessages.length, "user messages")
+    
+    setIsGeneratingAnalysis(true)
+    setCurrentScreen("analysis")
+    
+    try {
+      // Transform messages to format expected by API
+      const conversationHistory = messages.map(msg => ({
+        role: msg.role === "agent" ? "assistant" : "user",
+        content: msg.content,
+        timestamp: msg.timestamp,
+      }))
+
+      console.log("📤 [Live Chat] Sending to analysis API...")
+      
+      const response = await fetch("/api/conversation-analysis", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ conversationHistory }),
+      })
+
+      if (!response.ok) {
+        throw new Error(`Analysis API error: ${response.status}`)
+      }
+
+      const data = await response.json()
+      
+      console.log("✅ [Live Chat] Analysis complete:", {
+        sentences: data.sentenceAnalysis?.length || 0,
+        strengths: data.overallStrengths?.length || 0,
+        areas: data.areasToImprove?.length || 0,
+        vocab: data.vocabularySuggestions?.length || 0,
+      })
+      
+      setConversationAnalysisData(data)
+    } catch (error) {
+      console.error("❌ [Live Chat] Analysis failed:", error)
+      
+      // Fallback analysis
+      setConversationAnalysisData({
+        sentenceAnalysis: [],
+        overallStrengths: [
+          "You practiced speaking with AI in real-time",
+          "You engaged in natural conversation",
+          "You're building confidence through practice"
+        ],
+        areasToImprove: [{
+          area: "Keep practicing",
+          explanation: "Continue having conversations to improve fluency and confidence",
+          examples: ["Practice daily", "Speak naturally", "Don't worry about mistakes"]
+        }],
+        vocabularySuggestions: [],
+        summary: "Great job completing your first live chat! Keep practicing to build fluency and confidence."
+      })
+    } finally {
+      setIsGeneratingAnalysis(false)
+    }
+  }
+
+  const handleBackToHome = () => {
+    router.push("/")
+  }
+
+  return (
+    <main className="min-h-svh">
+      {currentScreen === "modal" && (
+        <ModeSelectionModal
+          onSelectMode={handleModeSelection}
+          onCancel={handleCancelModeSelection}
+        />
+      )}
+
+      {currentScreen === "conversation" && subMode && (
+        <LiveChatConversation 
+          onEndSession={handleEndSession}
+          subMode={subMode}
+        />
+      )}
+      
+      {currentScreen === "analysis" && (
+        <ConversationAnalysisScreen
+          sentenceAnalysis={conversationAnalysisData?.sentenceAnalysis || []}
+          overallStrengths={conversationAnalysisData?.overallStrengths || []}
+          areasToImprove={conversationAnalysisData?.areasToImprove || []}
+          vocabularySuggestions={conversationAnalysisData?.vocabularySuggestions || []}
+          summary={conversationAnalysisData?.summary || ""}
+          onBack={handleBackToHome}
+          isLoading={isGeneratingAnalysis}
+        />
+      )}
+    </main>
+  )
+}
