@@ -3,11 +3,15 @@
  * Single source of truth for all Gemini API settings, prompts, and model configurations
  */
 
-import type { ConversationMessage } from '@/app/page'
-
 // ============================================================================
 // TYPES & INTERFACES
 // ============================================================================
+
+interface ConversationMessage {
+  role: 'user' | 'assistant'
+  content: string
+  timestamp: Date
+}
 
 export interface GeminiModelConfig {
   name: string

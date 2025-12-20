@@ -1,5 +1,4 @@
 import { GoogleGenAI } from '@google/genai'
-import type { ConversationMessage } from '@/app/page'
 import { 
   getTranslationFeedbackConfig,
   estimateTokens,
@@ -9,6 +8,12 @@ import {
   MODELS,
   FALLBACK_FEEDBACK
 } from '@/lib/gemini-config'
+
+interface ConversationMessage {
+  role: 'user' | 'assistant'
+  content: string
+  timestamp: Date
+}
 
 export async function POST(req: Request) {
   const { conversationHistory } = await req.json()

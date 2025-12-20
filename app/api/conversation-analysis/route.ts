@@ -8,7 +8,12 @@ import {
   estimateTokens,
   logCost
 } from '@/lib/gemini-config'
-import type { ConversationMessage } from '@/app/page'
+
+interface ConversationMessage {
+  role: 'user' | 'assistant'
+  content: string
+  timestamp: Date
+}
 
 export async function POST(request: NextRequest) {
   try {
@@ -67,7 +72,7 @@ export async function POST(request: NextRequest) {
       },
     })
     
-    const text = result.text
+    const text = result.text || ''
 
     console.log('✅ [Conversation Analysis] Received response:', text.substring(0, 200) + '...')
 

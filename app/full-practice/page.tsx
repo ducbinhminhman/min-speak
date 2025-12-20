@@ -235,7 +235,6 @@ export default function FullPracticePage() {
           date={diaryData?.date || ""}
           time={diaryData?.time || ""}
           onDone={handleDiaryDone}
-          isLoading={isGeneratingDiary}
         />
       )}
     </main>

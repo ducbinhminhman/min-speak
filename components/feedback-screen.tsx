@@ -1,8 +1,21 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import type { FeedbackData } from "@/app/page"
 import { ArrowLeft, ArrowUpRight } from "lucide-react"
+
+interface ConversationMessage {
+  role: "user" | "assistant"
+  content: string
+  timestamp: Date
+}
+
+interface FeedbackData {
+  bestVersion: string
+  vocabularySuggestions: { word: string; meaning: string; example: string }[]
+  grammarStructures: { structure: string; explanation: string; example: string }[]
+  summary: string
+  conversationHistory: ConversationMessage[]
+}
 
 interface FeedbackScreenProps {
   data: FeedbackData | null

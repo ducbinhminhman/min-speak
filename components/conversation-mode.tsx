@@ -3,8 +3,15 @@
 import { useState, useEffect, useRef, useCallback } from "react"
 import { Button } from "@/components/ui/button"
 import { Avatar } from "@/components/avatar"
-import type { ConversationMessage, AppMode } from "@/app/page"
 import { Square, ArrowRight } from "lucide-react"
+
+interface ConversationMessage {
+  role: 'user' | 'assistant'
+  content: string
+  timestamp: Date
+}
+
+type AppMode = 'full' | 'quick'
 
 interface ConversationModeProps {
   onEndSession: (history: ConversationMessage[]) => void

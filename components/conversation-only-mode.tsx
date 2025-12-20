@@ -4,8 +4,13 @@ import { useState, useEffect, useRef, useCallback } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Avatar } from "@/components/avatar"
-import type { ConversationMessage } from "@/app/page"
 import { Square, Send } from "lucide-react"
+
+interface ConversationMessage {
+  role: 'user' | 'assistant'
+  content: string
+  timestamp: Date
+}
 
 interface ConversationOnlyModeProps {
   onEndSession: (history: ConversationMessage[]) => void
@@ -14,6 +19,7 @@ interface ConversationOnlyModeProps {
 
 export function ConversationOnlyMode({ onEndSession, subMode }: ConversationOnlyModeProps) {
   const [conversationHistory, setConversationHistory] = useState<ConversationMessage[]>([])
+  const [currentMode, setCurrentMode] = useState<"chat" | "immersive">(subMode)
   const [isRecording, setIsRecording] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [isProcessing, setIsProcessing] = useState(false)
@@ -381,7 +387,7 @@ export function ConversationOnlyMode({ onEndSession, subMode }: ConversationOnly
           )}
           
           {/* IMMERSIVE MODE: Avatar only - no messages */}
-          {subMode === "immersive" && (
+          {currentMode === "immersive" && (
             <div className="flex flex-col items-center justify-center min-h-[500px]">
               <Avatar 
                 state={isRecording ? "listening" : isSpeaking ? "speaking" : "idle"} 
@@ -391,7 +397,7 @@ export function ConversationOnlyMode({ onEndSession, subMode }: ConversationOnly
           )}
           
           {/* CHAT MODE: Conversation messages */}
-          {subMode === "chat" && conversationHistory.map((msg, index) => (
+          {currentMode === "chat" && conversationHistory.map((msg, index) => (
             <div
               key={index}
               className={cn(
