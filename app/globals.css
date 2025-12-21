@@ -11,13 +11,13 @@
   --card-foreground: oklch(0.30 0.02 60);
   --popover: oklch(0.98 0.01 80);
   --popover-foreground: oklch(0.30 0.02 60);
-  --primary: oklch(0.68 0.09 55);      /* Warm terracotta/peach */
+  --primary: oklch(0.72 0.22 40);      /* Peachy Coral */
   --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.88 0.04 70);    /* Light beige */
+  --secondary: oklch(0.75 0.20 10);    /* Dusty Rose */
   --secondary-foreground: oklch(0.35 0.02 60);
   --muted: oklch(0.92 0.02 75);        /* Muted beige */
   --muted-foreground: oklch(0.55 0.02 65);
-  --accent: oklch(0.75 0.08 85);       /* Soft golden */
+  --accent: oklch(0.70 0.18 30);       /* Warm Terracotta */
   --accent-foreground: oklch(0.30 0.02 60);
   --destructive: oklch(0.6 0.2 25);
   --destructive-foreground: oklch(0.99 0 0);

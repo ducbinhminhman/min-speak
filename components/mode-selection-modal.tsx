@@ -1,6 +1,6 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@mantine/core"
 import { MessageSquare, Globe } from "lucide-react"
 
 interface ModeSelectionModalProps {

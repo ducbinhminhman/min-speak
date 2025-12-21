@@ -1,6 +1,6 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@mantine/core"
 import { ArrowRight, Home } from "lucide-react"
 
 interface TranslationScreenProps {

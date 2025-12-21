@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react"
 import Image from "next/image"
-import { Button } from "@/components/ui/button"
+import { Button } from "@mantine/core"
 import { Avatar } from "@/components/avatar"
 import { Square, Send } from "lucide-react"
 

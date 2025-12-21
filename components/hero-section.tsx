@@ -1,7 +1,7 @@
 "use client"
 
 import { useRotatingPhrase } from "@/lib/utils"
-import { Button } from "./ui/button"
+import { Button } from "@mantine/core"
 
 interface HeroSectionProps {
   onModeSelect: (mode: "full" | "quick" | "conversation" | "live") => void
@@ -52,39 +52,47 @@ export function HeroSection({ onModeSelect }: HeroSectionProps) {
           </p>
 
           {/* Buttons - Vertical stack */}
-          <div className="grid grid-cols-1 gap-4 pt-4 md:pt-6 animate-fade-in-delay-2">
+          <div className="flex flex-col items-center gap-4 pt-4 md:pt-6 w-full max-w-xs mx-auto">
             <Button
               onClick={() => onModeSelect("full")}
-              variant="default"
-              size="hero"
-              className="w-full"
+              variant="gradient"
+              gradient={{ from: 'indigo', to: 'grape', deg: 85 }}
+              size="lg"
+              radius="xl"
+              fullWidth
             >
               Full Practice
             </Button>
 
             <Button
               onClick={() => onModeSelect("quick")}
-              variant="outline"
-              size="hero"
-              className="w-full"
+              variant="gradient"
+              gradient={{ from: 'indigo', to: 'grape', deg: 85 }}
+              size="lg"
+              radius="xl"
+              fullWidth
             >
               Quick Translation
             </Button>
 
             <Button
               onClick={() => onModeSelect("conversation")}
-              variant="outline"
-              size="hero"
-              className="w-full"
+              variant="gradient"
+              gradient={{ from: 'indigo', to: 'grape', deg: 85 }}
+              size="lg"
+              radius="xl"
+              fullWidth
             >
               Conversation Only
             </Button>
 
             <Button
               onClick={() => onModeSelect("live")}
-              variant="secondary"
-              size="hero"
-              className="w-full"
+              variant="gradient"
+              gradient={{ from: 'indigo', to: 'grape', deg: 85 }}
+              size="lg"
+              radius="xl"
+              fullWidth
             >
               Live Chat
             </Button>

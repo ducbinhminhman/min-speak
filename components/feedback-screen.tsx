@@ -1,6 +1,6 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@mantine/core"
 import { ArrowLeft, ArrowUpRight } from "lucide-react"
 
 interface ConversationMessage {

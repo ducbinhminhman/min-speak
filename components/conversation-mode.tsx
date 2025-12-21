@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, useCallback } from "react"
-import { Button } from "@/components/ui/button"
+import { Button } from "@mantine/core"
 import { Avatar } from "@/components/avatar"
 import { Square, ArrowRight } from "lucide-react"
 

@@ -1,6 +1,6 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@mantine/core"
 import { ArrowLeft, CheckCircle2, AlertCircle, BookOpen, Lightbulb } from "lucide-react"
 
 interface SentenceAnalysis {

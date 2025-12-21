@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, useCallback } from "react"
-import { Button } from "@/components/ui/button"
+import { Button } from "@mantine/core"
 import { Square } from "lucide-react"
 
 interface ReflectiveChatProps {

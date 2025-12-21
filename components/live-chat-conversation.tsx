@@ -3,7 +3,7 @@
 import { useConversation } from "@elevenlabs/react"
 import { useState, useEffect, useRef } from "react"
 import Image from "next/image"
-import { Button } from "@/components/ui/button"
+import { Button } from "@mantine/core"
 import { Avatar } from "@/components/avatar"
 import { Square, Mic, MicOff, Send } from "lucide-react"
 
