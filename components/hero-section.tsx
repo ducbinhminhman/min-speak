@@ -1,63 +1,39 @@
 "use client"
 
-import { useRotatingPhrase } from "@/lib/utils"
-import { Button } from "@mantine/core"
+import { Button, Text } from "@mantine/core"
 
 interface HeroSectionProps {
   onModeSelect: (mode: "full" | "quick" | "conversation" | "live") => void
 }
 
-const PHRASES = [
-  "feeling, in new words",
-  "learn to express myself",
-  "I believe in myself",
-  "speak, gently",
-]
-
 export function HeroSection({ onModeSelect }: HeroSectionProps) {
-  const currentPhrase = useRotatingPhrase(PHRASES, 4000)
-
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-gradient-to-br from-stone-50 via-amber-50/30 to-orange-50/20">
-      {/* Watercolor Background */}
+      
+      {/* Background */}
       <div className="absolute inset-0">
-        <div 
-          className="w-full h-full bg-center bg-cover bg-no-repeat opacity-100"
-          style={{
-            backgroundImage: "url('/hero.png')",
-          }}
+        <div
+          className="w-full h-full bg-center bg-cover bg-no-repeat"
+          style={{ backgroundImage: "url('/hero.png')" }}
         />
       </div>
 
-      {/* Grid Container */}
-      <div className="relative z-10 min-h-screen grid grid-cols-4 md:grid-cols-12 gap-4 px-4 md:px-8 lg:px-12 items-center">
+      {/* Content wrapper */}
+      <div className="relative z-10 flex min-h-screen items-center justify-center px-4 md:px-8 lg:px-12">
         
-        {/* Content - Centered on grid */}
-        <div className="col-span-4 md:col-span-8 md:col-start-3 lg:col-span-6 lg:col-start-4 text-center space-y-6 md:space-y-8">
+        <div className="w-full max-w-2xl justify-center text-center space-y-6 md:space-y-8 pt-12 md:pt-0">
           
-          {/* Title */}
-          <h1 
-            className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-serif font-bold tracking-tight animate-fade-in gradient-text"
-            style={{ fontFamily: "var(--font-cormorant)" }}
-          >
-            Thương
-          </h1>
+          {/* Header text */}
+          <h1 className="mb-4 text-balance text-pretty text-3xl font-bold tracking-tight text-heading md:text-5xl lg:text-6xl">What do you want to practice today?</h1>
 
-          {/* Rotating phrase */}
-          <p 
-            className="text-xl sm:text-2xl md:text-3xl font-light text-stone-600 lowercase tracking-wide min-h-[2rem] md:min-h-[2.5rem] animate-fade-in-delay transition-opacity duration-500"
-            key={currentPhrase}
-          >
-            {currentPhrase}
-          </p>
+          {/* Buttons */}
+          <div className="flex flex-col items-center gap-4 pt-4 md:pt-6 w-1/2 md:w-full max-w-xs mx-auto">
 
-          {/* Buttons - Vertical stack */}
-          <div className="flex flex-col items-center gap-4 pt-4 md:pt-6 w-full max-w-xs mx-auto">
             <Button
               onClick={() => onModeSelect("full")}
               variant="gradient"
-              gradient={{ from: 'indigo', to: 'grape', deg: 85 }}
-              size="lg"
+              gradient={{ from: "indigo", to: "grape", deg: 85 }}
+              size="xl"
               radius="xl"
               fullWidth
             >
@@ -67,30 +43,30 @@ export function HeroSection({ onModeSelect }: HeroSectionProps) {
             <Button
               onClick={() => onModeSelect("quick")}
               variant="gradient"
-              gradient={{ from: 'indigo', to: 'grape', deg: 85 }}
-              size="lg"
+              gradient={{ from: "indigo", to: "grape", deg: 85 }}
+              size="xl"
               radius="xl"
               fullWidth
             >
-              Quick Translation
+              Translation
             </Button>
 
             <Button
               onClick={() => onModeSelect("conversation")}
               variant="gradient"
-              gradient={{ from: 'indigo', to: 'grape', deg: 85 }}
-              size="lg"
+              gradient={{ from: "indigo", to: "grape", deg: 85 }}
+              size="xl"
               radius="xl"
               fullWidth
             >
-              Conversation Only
+              Chat Only
             </Button>
 
             <Button
               onClick={() => onModeSelect("live")}
               variant="gradient"
-              gradient={{ from: 'indigo', to: 'grape', deg: 85 }}
-              size="lg"
+              gradient={{ from: "indigo", to: "grape", deg: 85 }}
+              size="xl"
               radius="xl"
               fullWidth
             >
@@ -98,7 +74,6 @@ export function HeroSection({ onModeSelect }: HeroSectionProps) {
             </Button>
           </div>
         </div>
-
       </div>
     </div>
   )
