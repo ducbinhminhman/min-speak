@@ -109,21 +109,10 @@ export const PRICING = {
 
 export const MODELS = {
   /**
-   * Model configuration for conversation/chat API
-   * Optimized for natural, conversational responses
-   */
-  CONVERSATION: {
-    name: 'gemini-2.0-flash-exp',
-    maxOutputTokens: 512,
-    temperature: 0.8,
-    topP: 0.95,
-  } as GeminiModelConfig,
-
-  /**
-   * Model configuration for feedback analysis
+   * Model configuration for conversation analysis
    * Optimized for structured analysis and JSON output
    */
-  FEEDBACK: {
+  ANALYSIS: {
     name: 'gemini-2.0-flash-exp',
     maxOutputTokens: 1024,
     temperature: 0.7,
@@ -137,220 +126,6 @@ export const MODELS = {
 // ============================================================================
 
 export const PROMPTS = {
-  /**
-   * System prompt for conversation mode
-   * This defines the AI's personality and behavior during conversations
-   */
-  CONVERSATION_SYSTEM: `You are a friendly English conversation partner helping users practice their speaking skills. 
-Keep responses natural, conversational, and encouraging. 
-Ask follow-up questions to keep the conversation going.
-Keep responses concise (2-3 sentences max) so they're easy to listen to.
-Occasionally provide gentle corrections or suggest better ways to phrase things.`,
-
-  /**
-   * System prompt for reflective chat mode
-   * Helps users process their thoughts and feelings about what they shared
-   */
-  REFLECTIVE_CHAT: `You are a compassionate, neutral listener helping someone process their thoughts and feelings.
-
-Your role:
-- Ask open-ended questions to help them explore deeper
-- Reflect back what you hear without judgment
-- Help them name their own emotions and thoughts
-- Stay curious, warm, and non-judgmental
-- Don't give advice unless explicitly asked
-- Don't impose interpretations or manipulate their feelings
-- Keep responses short (2-3 sentences max)
-- Focus on helping them understand themselves better
-
-Guidelines:
-- Use phrases like: "How did that make you feel?", "Tell me more about...", "What was going through your mind?"
-- Reflect back: "It sounds like you felt...", "I hear that..."
-- Validate without fixing: "That makes sense", "I can understand why..."
-- Stay open and curious, not directive
-
-Remember: Your job is to help them explore, not to solve or judge.`,
-
-  /**
-   * Prompt for generating authentic diary entry
-   * Uses user's actual words to create diary
-   */
-  DIARY_AUTHENTIC: `You are helping someone create an authentic diary entry from their day.
-
-Vietnamese spoken:
-{VIETNAMESE}
-
-English translation:
-{ENGLISH}
-
-Reflective chat conversation:
-{CHAT_HISTORY}
-
-Create an authentic diary entry in the following JSON format:
-{
-  "entry": "The diary entry text in first person, using their actual words and phrases",
-  "date": "Today's date in format: December 17, 2025"
-}
-
-Guidelines:
-1. **Use their ACTUAL words** - copy phrases they used verbatim from Vietnamese, English, and chat
-2. **Keep their speaking style** - don't make it fancy or literary
-3. **Organize chronologically** - structure what happened during their day
-4. **Include emotions** - use feelings they expressed in the chat
-5. **First person** - write as "I..." using their voice
-6. **Natural tone** - sounds like them writing in their diary, not an essay
-7. **Be authentic** - this is THEIR voice, not polished writing
-
-Example style: "Today I went to the market. I felt happy when I met my old friend. We talked about..."
-
-Return ONLY valid JSON, no markdown formatting.`,
-
-  /**
-   * Prompt for generating literary diary entry
-   * Polished, expressive version of the same day
-   */
-  DIARY_LITERARY: `You are helping someone create a literary, polished diary entry from their day.
-
-Authentic entry (user's voice):
-{AUTHENTIC_ENTRY}
-
-Original context:
-Vietnamese: {VIETNAMESE}
-English: {ENGLISH}
-Chat: {CHAT_HISTORY}
-
-Create a literary diary entry in the following JSON format:
-{
-  "entry": "A polished, literary diary entry with the same facts and feelings",
-  "date": "Today's date in format: December 17, 2025"
-}
-
-Guidelines:
-1. **Same facts and feelings** - don't invent anything, use what they shared
-2. **Literary style** - more expressive, flowing prose
-3. **Richer vocabulary** - use more descriptive, evocative words
-4. **Better sentence structure** - varied rhythm, engaging flow
-5. **Vivid imagery** - paint a picture with words
-6. **Emotional depth** - explore feelings more eloquently
-7. **Still authentic** - enhanced version, not fiction
-
-Example style: "The morning market bustled with familiar faces and forgotten memories. When I encountered my old friend among the vendor stalls, a warmth spread through my chest..."
-
-Return ONLY valid JSON, no markdown formatting.`,
-
-  /**
-   * Analysis prompt for Vietnamese-to-English translation feedback
-   * This guides the AI to compare and evaluate translation quality
-   */
-  TRANSLATION_FEEDBACK: `You are an expert language coach specializing in Vietnamese-to-English translation.
-
-Vietnamese original:
-{VIETNAMESE}
-
-English translation (provided by learner):
-{ENGLISH}
-
-Analyze the learner's translation and provide feedback in the following JSON format:
-{
-  "bestVersion": "The ideal English translation of the Vietnamese text - natural, fluent, and accurate",
-  "vocabularySuggestions": [
-    { "word": "suggested word", "meaning": "definition", "example": "example sentence using this word" },
-    { "word": "another word", "meaning": "definition", "example": "example sentence" }
-  ],
-  "grammarStructures": [
-    { "structure": "grammar pattern name", "explanation": "how to use it", "example": "example sentence" },
-    { "structure": "another pattern", "explanation": "how to use it", "example": "example sentence" }
-  ],
-  "summary": "A brief encouraging summary comparing their translation to the best version"
-}
-
-Guidelines:
-1. **Best Version**: Write the most natural, fluent English translation of the Vietnamese text. This should sound like a native speaker.
-
-2. **Vocabulary Suggestions**: Provide 3-4 useful vocabulary words that:
-   - Would improve their translation
-   - Are relevant to the topic they discussed
-   - Include clear meaning and practical example sentences
-   - Help them express similar ideas better in the future
-
-3. **Grammar Structures**: Teach 2-3 sentence structures or grammar patterns that:
-   - Would make their English more natural
-   - Are relevant to what they were trying to say
-   - Include clear explanations of when/how to use them
-   - Provide concrete example sentences
-   - Examples: "past perfect tense", "conditionals", "passive voice", "relative clauses", etc.
-
-4. **Summary**: 
-   - Acknowledge what they did well in their translation
-   - Briefly note the main differences from the best version
-   - Encourage them to keep practicing (2-3 sentences)
-
-Focus on teaching them to speak more naturally and accurately in English.
-
-Return ONLY valid JSON, no markdown formatting or additional text.`,
-
-  /**
-   * Prompt for Vietnamese-only input (AI translates)
-   */
-  VIETNAMESE_TO_ENGLISH: `You are an expert language coach helping Vietnamese learners improve their English.
-
-The learner spoke in Vietnamese about their day:
-{VIETNAMESE}
-
-Translate this to natural English and provide learning feedback in the following JSON format:
-{
-  "bestVersion": "Natural, fluent English translation of what they said",
-  "vocabularySuggestions": [
-    { "word": "useful word", "meaning": "definition", "example": "example sentence" }
-  ],
-  "grammarStructures": [
-    { "structure": "grammar pattern", "explanation": "how to use it", "example": "example sentence" }
-  ],
-  "summary": "Encouraging summary highlighting the topic and what they can learn"
-}
-
-Guidelines:
-1. **Best Version**: Translate their Vietnamese naturally into English - how a native speaker would say it.
-
-2. **Vocabulary**: Provide 3-4 key vocabulary words from your translation that they should learn.
-
-3. **Grammar Structures**: Teach 2-3 grammar patterns used in the translation that would help them in similar situations.
-
-4. **Summary**: Acknowledge what they talked about and encourage them to practice speaking English next time.
-
-Return ONLY valid JSON, no markdown formatting or additional text.`,
-
-  /**
-   * Prompt for English-only input (analyze English)
-   */
-  ENGLISH_ANALYSIS: `You are an expert English language coach.
-
-The learner spoke in English:
-{ENGLISH}
-
-Analyze their English and provide feedback in the following JSON format:
-{
-  "bestVersion": "A more natural, polished version of what they said in English",
-  "vocabularySuggestions": [
-    { "word": "better word choice", "meaning": "definition", "example": "example sentence" }
-  ],
-  "grammarStructures": [
-    { "structure": "grammar pattern", "explanation": "how to use it", "example": "example sentence" }
-  ],
-  "summary": "Encouraging summary of their strengths and areas to improve"
-}
-
-Guidelines:
-1. **Best Version**: Rewrite their English to sound more natural and fluent, fixing any errors.
-
-2. **Vocabulary**: Suggest 3-4 vocabulary words that would improve their expression.
-
-3. **Grammar Structures**: Teach 2-3 grammar patterns that would help them speak more naturally.
-
-4. **Summary**: Acknowledge what they did well and provide specific encouragement.
-
-Return ONLY valid JSON, no markdown formatting or additional text.`,
-
   /**
    * Prompt for detailed conversation analysis (sentence-by-sentence)
    * Analyzes each user message and provides specific improvement suggestions
@@ -422,59 +197,23 @@ Be specific, practical, and encouraging. Help them speak more naturally and conf
 Return ONLY valid JSON, no markdown formatting or additional text.`,
 
   /**
-   * Analysis prompt for feedback generation
-   * This guides the AI to analyze conversations and generate structured feedback
-   */
-  FEEDBACK_ANALYSIS: `You are an expert English language coach. Analyze this conversation between a learner and an AI tutor.
-
-Conversation transcript:
-{TRANSCRIPT}
-
-Based on this conversation, provide personalized feedback in the following JSON format:
-{
-  "pronunciationNudges": ["tip 1", "tip 2", "tip 3"],
-  "phraseUpgrades": [
-    { "original": "phrase user said", "improved": "better alternative" },
-    { "original": "another phrase", "improved": "better version" }
-  ],
-  "summary": "A brief encouraging summary of the conversation and key strengths/areas to improve"
-}
-
-Guidelines:
-1. **Pronunciation tips**: Infer likely pronunciation challenges from their word choices, hesitations, or patterns. Give 2-3 specific, actionable tips about common sounds or stress patterns they might struggle with.
-
-2. **Phrase upgrades**: Find 2-3 actual phrases the user said and suggest more natural, native-sounding alternatives. Use their exact words for "original".
-
-3. **Summary**: Write an encouraging 2-3 sentence summary highlighting what they discussed, their strengths, and one area to focus on.
-
-If the conversation is too short (less than 2 exchanges), provide general encouraging feedback.
-
-Return ONLY valid JSON, no markdown formatting or additional text.`,
-
-  /**
-   * Fallback prompts when AI Studio fetch fails
+   * Fallback prompt when AI Studio fetch fails
    */
   FALLBACK: {
-    conversation: `You are a friendly English conversation partner helping users practice their speaking skills. 
-Keep responses natural, conversational, and encouraging. 
-Ask follow-up questions to keep the conversation going.
-Keep responses concise (2-3 sentences max) so they're easy to listen to.
-Occasionally provide gentle corrections or suggest better ways to phrase things.`,
-    
-    feedback: `You are an expert English language coach analyzing conversations.
+    analysis: `You are an expert English language coach analyzing conversations.
 Provide helpful, encouraging feedback with specific pronunciation tips and phrase improvements.
 Focus on actionable advice that learners can immediately apply.`,
   },
 } as const
 
 // ============================================================================
-// CACHE CONFIGURATION
+// CACHE CONFIGURATION (Not used in Live Chat mode)
 // ============================================================================
 
 export const CACHE_CONFIG: CacheConfig = {
-  enabled: true,
-  ttl: '3600s', // 1 hour cache duration
-  minHistoryLength: 2, // Enable caching after 2+ messages
+  enabled: false,
+  ttl: '3600s',
+  minHistoryLength: 2,
 }
 
 // ============================================================================
@@ -482,10 +221,19 @@ export const CACHE_CONFIG: CacheConfig = {
 // ============================================================================
 
 export const FALLBACK_FEEDBACK = {
-  bestVersion: "Unable to generate the best version at this time.",
+  sentenceAnalysis: [],
+  overallStrengths: [
+    "You practiced speaking with AI in real-time",
+    "You engaged in natural conversation",
+    "You're building confidence through practice"
+  ],
+  areasToImprove: [{
+    area: "Keep practicing",
+    explanation: "Continue having conversations to improve fluency and confidence",
+    examples: ["Practice daily", "Speak naturally", "Don't worry about mistakes"]
+  }],
   vocabularySuggestions: [],
-  grammarStructures: [],
-  summary: "Nice work on your translation! Keep practicing regularly to build your confidence and fluency.",
+  summary: "Great job completing your conversation! Keep practicing to build fluency and confidence.",
 }
 
 // ============================================================================
@@ -493,67 +241,22 @@ export const FALLBACK_FEEDBACK = {
 // ============================================================================
 
 /**
- * Get complete configuration for chat/conversation API
- * @param conversationHistory - Optional conversation history for context
- * @returns Configuration object ready to use with Gemini API
- */
-export function getChatConfig(conversationHistory?: ConversationMessage[]) {
-  return {
-    model: MODELS.CONVERSATION,
-    prompt: PROMPTS.CONVERSATION_SYSTEM,
-    generationConfig: {
-      maxOutputTokens: MODELS.CONVERSATION.maxOutputTokens,
-      temperature: MODELS.CONVERSATION.temperature,
-      topP: MODELS.CONVERSATION.topP,
-    },
-    cacheConfig: CACHE_CONFIG,
-    shouldUseCache: conversationHistory 
-      ? conversationHistory.length >= CACHE_CONFIG.minHistoryLength 
-      : false,
-  }
-}
-
-/**
- * Get complete configuration for feedback API (Translation mode)
- * @param vietnameseText - Original Vietnamese text
- * @param englishTranslation - User's English translation
- * @returns Configuration object ready to use with Gemini API
- */
-export function getTranslationFeedbackConfig(vietnameseText: string, englishTranslation: string) {
-  const prompt = PROMPTS.TRANSLATION_FEEDBACK
-    .replace('{VIETNAMESE}', vietnameseText)
-    .replace('{ENGLISH}', englishTranslation)
-
-  return {
-    model: MODELS.FEEDBACK,
-    prompt,
-    generationConfig: {
-      maxOutputTokens: MODELS.FEEDBACK.maxOutputTokens,
-      temperature: MODELS.FEEDBACK.temperature,
-      topP: MODELS.FEEDBACK.topP,
-      responseMimeType: MODELS.FEEDBACK.responseMimeType,
-    },
-    fallbackFeedback: FALLBACK_FEEDBACK,
-  }
-}
-
-/**
- * Get complete configuration for feedback API
+ * Get complete configuration for conversation analysis API
  * @param conversationHistory - Conversation history to analyze
  * @returns Configuration object ready to use with Gemini API
  */
-export function getFeedbackConfig(conversationHistory: ConversationMessage[]) {
+export function getConversationAnalysisConfig(conversationHistory: ConversationMessage[]) {
   const transcript = formatConversationTranscript(conversationHistory)
-  const prompt = PROMPTS.FEEDBACK_ANALYSIS.replace('{TRANSCRIPT}', transcript)
+  const prompt = PROMPTS.CONVERSATION_DETAILED_ANALYSIS.replace('{CONVERSATION}', transcript)
 
   return {
-    model: MODELS.FEEDBACK,
+    model: MODELS.ANALYSIS,
     prompt,
     generationConfig: {
-      maxOutputTokens: MODELS.FEEDBACK.maxOutputTokens,
-      temperature: MODELS.FEEDBACK.temperature,
-      topP: MODELS.FEEDBACK.topP,
-      responseMimeType: MODELS.FEEDBACK.responseMimeType,
+      maxOutputTokens: MODELS.ANALYSIS.maxOutputTokens,
+      temperature: MODELS.ANALYSIS.temperature,
+      topP: MODELS.ANALYSIS.topP,
+      responseMimeType: MODELS.ANALYSIS.responseMimeType,
     },
     fallbackFeedback: FALLBACK_FEEDBACK,
   }
@@ -596,21 +299,12 @@ export function buildConversationPrompt(
 }
 
 /**
- * Check if caching should be enabled for current request
- * @param historyLength - Number of messages in conversation history
- * @returns Boolean indicating if cache should be used
- */
-export function shouldEnableCache(historyLength: number): boolean {
-  return CACHE_CONFIG.enabled && historyLength >= CACHE_CONFIG.minHistoryLength
-}
-
-/**
  * Get model name for logging/debugging
- * @param type - Type of API ('conversation' or 'feedback')
+ * @param type - Type of API ('analysis')
  * @returns Model name string
  */
-export function getModelName(type: 'conversation' | 'feedback'): string {
-  return type === 'conversation' ? MODELS.CONVERSATION.name : MODELS.FEEDBACK.name
+export function getModelName(type: 'analysis'): string {
+  return MODELS.ANALYSIS.name
 }
 
 // ============================================================================
