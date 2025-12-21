@@ -3,7 +3,6 @@
 import { useConversation } from "@elevenlabs/react"
 import { useState, useEffect, useRef } from "react"
 import Image from "next/image"
-import { Button } from "@mantine/core"
 import { Avatar } from "@/components/avatar"
 import { Square, Mic, MicOff, Send } from "lucide-react"
 
@@ -166,15 +165,13 @@ export function LiveChatConversation({ onEndSession, subMode }: LiveChatConversa
         <div className="relative z-10 flex flex-col min-h-svh">
           {/* Minimal Header */}
           <div className="w-full px-6 py-4 flex justify-end">
-            <Button
-              variant="ghost"
-              size="sm"
+            <button
               onClick={handleEndSession}
-              className="text-white hover:text-white hover:bg-white/20 rounded-full px-4 backdrop-blur-sm"
+              className="text-white hover:text-white hover:bg-white/20 rounded-full px-4 py-2 backdrop-blur-sm transition-colors text-sm md:text-lg"
             >
-              <Send className="w-4 h-4 mr-2" />
+              <Send className="w-6 h-6 mr-2 inline" />
               End & Analyze
-            </Button>
+            </button>
           </div>
 
           {/* Spacer */}
@@ -217,21 +214,31 @@ export function LiveChatConversation({ onEndSession, subMode }: LiveChatConversa
 
   // CHAT MODE: Original layout with messages
   return (
-    <div className="gradient-bg flex flex-col min-h-svh">
+    <div 
+      className="flex flex-col min-h-svh relative"
+      style={{
+        backgroundImage: "url('/background/sea.png')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-black/30 backdrop-blur-[1px]" />
+      
+      {/* Content */}
+      <div className="relative z-10 flex flex-col min-h-svh">
       {/* Header */}
       <div className="w-full px-6 py-4 flex justify-between items-center">
-        <div className="text-sm font-medium text-muted-foreground">
-          💬 Live Chat (With Text)
+        <div className="text-sm md:text-lg font-medium text-white">
+          Live Chat
         </div>
-        <Button
-          variant="ghost"
-          size="sm"
+        <button
           onClick={handleEndSession}
-          className="text-muted-foreground hover:text-foreground hover:bg-white/50 rounded-full px-4"
+          className="text-white hover:text-white hover:bg-white/20 rounded-full px-4 py-2 backdrop-blur-sm transition-colors text-sm md:text-lg"
         >
-          <Send className="w-3 h-3 mr-2" />
+          <Send className="w-6 h-6 mr-2 inline" />
           End & Analyze
-        </Button>
+        </button>
       </div>
 
       {/* Main Content */}
@@ -242,13 +249,13 @@ export function LiveChatConversation({ onEndSession, subMode }: LiveChatConversa
           {isConnecting && (
             <div className="flex flex-col items-center justify-center min-h-[400px] text-center">
               <Avatar state="listening" size="lg" />
-              <p className="mt-6 text-muted-foreground text-sm">
+              <p className="mt-6 text-white text-sm">
                 Connecting to AI agent...
               </p>
               <div className="flex space-x-2 mt-4">
-                <div className="w-2 h-2 bg-foreground/40 rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></div>
-                <div className="w-2 h-2 bg-foreground/40 rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></div>
-                <div className="w-2 h-2 bg-foreground/40 rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></div>
+                <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></div>
+                <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></div>
+                <div className="w-2 h-2 bg-white/60 rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></div>
               </div>
             </div>
           )}
@@ -272,7 +279,7 @@ export function LiveChatConversation({ onEndSession, subMode }: LiveChatConversa
                     state={conversation.isSpeaking ? "speaking" : "idle"} 
                     size="lg" 
                   />
-                  <p className="mt-6 text-muted-foreground text-sm">
+                  <p className="mt-6 text-white text-sm">
                     {conversation.isSpeaking 
                       ? "AI is speaking..." 
                       : "Start speaking to begin the conversation"}
@@ -309,6 +316,7 @@ export function LiveChatConversation({ onEndSession, subMode }: LiveChatConversa
           )}
         </div>
       </div>
+      </div>
 
       {/* Bottom Controls */}
       {!isConnecting && !error && (
@@ -329,24 +337,22 @@ export function LiveChatConversation({ onEndSession, subMode }: LiveChatConversa
               </div>
             </div>
             
-            <Button
+            <button
               onClick={toggleMute}
-              variant="outline"
-              size="lg"
-              className="rounded-full px-6"
+              className="rounded-full px-6 py-3 border border-white/30 bg-white/10 backdrop-blur-sm hover:bg-white/20 transition-all text-white font-medium"
             >
               {micMuted ? (
                 <>
-                  <MicOff className="w-5 h-5 mr-2" />
+                  <MicOff className="w-5 h-5 mr-2 inline" />
                   Unmute
                 </>
               ) : (
                 <>
-                  <Mic className="w-5 h-5 mr-2" />
+                  <Mic className="w-5 h-5 mr-2 inline" />
                   Mute
                 </>
               )}
-            </Button>
+            </button>
           </div>
           
           {conversation.isSpeaking && (

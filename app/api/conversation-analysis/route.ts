@@ -62,12 +62,12 @@ export async function POST(request: NextRequest) {
     // Generate analysis
     console.log('🤖 [Conversation Analysis] Calling Gemini API...')
     const result = await ai.models.generateContent({
-      model: MODELS.FEEDBACK.name,
+      model: MODELS.ANALYSIS.name,
       contents: prompt,
       config: {
         maxOutputTokens: 2048, // Larger output for detailed analysis
-        temperature: MODELS.FEEDBACK.temperature,
-        topP: MODELS.FEEDBACK.topP,
+        temperature: MODELS.ANALYSIS.temperature,
+        topP: MODELS.ANALYSIS.topP,
         responseMimeType: 'application/json',
       },
     })

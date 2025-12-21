@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { HeroLanding } from "@/components/hero-landing"
 import { LiveChatConversation } from "@/components/live-chat-conversation"
 import { ConversationAnalysisScreen } from "@/components/conversation-analysis-screen"
 import { ModeSelectionModal } from "@/components/mode-selection-modal"
@@ -34,10 +35,14 @@ interface ConversationAnalysisData {
 }
 
 export default function Home() {
-  const [currentScreen, setCurrentScreen] = useState<"modal" | "conversation" | "analysis">("modal")
+  const [currentScreen, setCurrentScreen] = useState<"landing" | "modeSelection" | "conversation" | "analysis">("landing")
   const [subMode, setSubMode] = useState<"chat" | "immersive" | null>(null)
   const [conversationAnalysisData, setConversationAnalysisData] = useState<ConversationAnalysisData | null>(null)
   const [isGeneratingAnalysis, setIsGeneratingAnalysis] = useState(false)
+
+  const handleStartPractice = () => {
+    setCurrentScreen("modeSelection")
+  }
 
   const handleModeSelection = (mode: "chat" | "immersive") => {
     setSubMode(mode)
@@ -45,7 +50,7 @@ export default function Home() {
   }
 
   const handleCancelModeSelection = () => {
-    setCurrentScreen("modal")
+    setCurrentScreen("landing")
   }
 
   const handleEndSession = async (messages: Message[]) => {
@@ -53,7 +58,7 @@ export default function Home() {
     
     if (userMessages.length < 2) {
       console.log("⚠️ [Live Chat] Too few messages for analysis, skipping...")
-      setCurrentScreen("modal")
+      setCurrentScreen("landing")
       setSubMode(null)
       return
     }
@@ -116,13 +121,17 @@ export default function Home() {
   }
 
   const handleBackToHome = () => {
-    setCurrentScreen("modal")
+    setCurrentScreen("landing")
     setSubMode(null)
   }
 
   return (
     <main className="min-h-svh">
-      {currentScreen === "modal" && (
+      {currentScreen === "landing" && (
+        <HeroLanding onStartPractice={handleStartPractice} />
+      )}
+
+      {currentScreen === "modeSelection" && (
         <ModeSelectionModal
           onSelectMode={handleModeSelection}
           onCancel={handleCancelModeSelection}

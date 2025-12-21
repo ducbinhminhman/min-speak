@@ -1,6 +1,5 @@
 "use client"
 
-import { Button } from "@mantine/core"
 import { ArrowLeft, CheckCircle2, AlertCircle, BookOpen, Lightbulb } from "lucide-react"
 
 interface SentenceAnalysis {
@@ -45,8 +44,18 @@ export function ConversationAnalysisScreen({
   
   if (isLoading) {
     return (
-      <div className="gradient-bg flex flex-col items-center justify-center min-h-svh px-6">
-        <div className="flex flex-col items-center text-center max-w-md">
+      <div 
+        className="flex flex-col items-center justify-center min-h-svh px-6 relative"
+        style={{
+          backgroundImage: "url('/background/night.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
+        
+        <div className="relative z-10 flex flex-col items-center text-center max-w-md">
           {/* Animated Icon */}
           <div className="mb-8 relative">
             <div className="w-24 h-24 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center animate-pulse">
@@ -64,10 +73,10 @@ export function ConversationAnalysisScreen({
           </div>
           
           {/* Text */}
-          <h2 className="text-2xl md:text-3xl font-bold mb-3 bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          <h2 className="text-2xl md:text-3xl font-bold mb-3 text-white">
             Analyzing Your Conversation
           </h2>
-          <p className="text-base text-muted-foreground mb-6">
+          <p className="text-base text-white/80 mb-6">
             AI is reviewing your sentences and preparing detailed feedback...
           </p>
           
@@ -77,19 +86,19 @@ export function ConversationAnalysisScreen({
               <div className="flex-shrink-0 w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
                 <span className="text-white text-xs">✓</span>
               </div>
-              <span className="text-foreground/80">Processing conversation transcript</span>
+              <span className="text-white">Processing conversation transcript</span>
             </div>
             <div className="flex items-center gap-3 text-sm">
               <div className="flex-shrink-0 w-5 h-5 rounded-full bg-blue-500 animate-pulse"></div>
-              <span className="text-foreground/80">Analyzing sentence patterns</span>
+              <span className="text-white">Analyzing sentence patterns</span>
             </div>
             <div className="flex items-center gap-3 text-sm">
               <div className="flex-shrink-0 w-5 h-5 rounded-full bg-gray-300"></div>
-              <span className="text-muted-foreground">Generating personalized feedback</span>
+              <span className="text-white/60">Generating personalized feedback</span>
             </div>
           </div>
           
-          <p className="mt-6 text-sm text-muted-foreground italic">
+          <p className="mt-6 text-sm text-white/60 italic">
             This usually takes 10-15 seconds
           </p>
         </div>
@@ -98,20 +107,30 @@ export function ConversationAnalysisScreen({
   }
 
   return (
-    <div className="gradient-bg min-h-svh">
+    <div 
+      className="min-h-svh relative"
+      style={{
+        backgroundImage: "url('/background/night.png')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px]" />
+      
+      {/* Content */}
+      <div className="relative z-10 min-h-svh">
       {/* Header */}
-      <div className="sticky top-0 z-10 backdrop-blur-md bg-white/30 border-b border-white/20">
+      <div className="sticky top-0 z-10 backdrop-blur-md bg-black/30 border-b border-white/20">
         <div className="px-6 py-4 flex items-center justify-between max-w-4xl mx-auto">
-          <Button
-            variant="ghost"
-            size="sm"
+          <button
             onClick={onBack}
-            className="text-foreground hover:text-foreground hover:bg-white/50 rounded-full"
+            className="text-white hover:text-white hover:bg-white/20 rounded-full px-4 py-2 transition-colors"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
+            <ArrowLeft className="w-4 h-4 mr-2 inline" />
             Back to Home
-          </Button>
-          <h1 className="text-lg font-semibold">📊 Conversation Analysis</h1>
+          </button>
+          <h1 className="text-lg font-semibold text-white">📊 Conversation Analysis</h1>
           <div className="w-20"></div> {/* Spacer for centering */}
         </div>
       </div>
@@ -249,14 +268,14 @@ export function ConversationAnalysisScreen({
 
         {/* Bottom Action */}
         <div className="flex justify-center pt-4 pb-8">
-          <Button
+          <button
             onClick={onBack}
-            size="lg"
-            className="h-14 px-8 text-base font-medium rounded-full bg-foreground text-background hover:bg-foreground/90 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
+            className="h-14 px-8 text-base font-medium rounded-full bg-white text-black hover:bg-white/90 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-[1.02] active:scale-[0.98]"
           >
             Practice Again
-          </Button>
+          </button>
         </div>
+      </div>
       </div>
     </div>
   )
