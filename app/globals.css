@@ -212,6 +212,13 @@
   text-shadow: 0 0 40px rgba(218, 165, 32, 0.3);
 }
 
+.gradient-text-pink-orange {
+  background: linear-gradient(135deg, #ec4899 0%, #fb923c 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 /* Simple, performant fade-in animations */
 @keyframes fadeIn {
   from {
