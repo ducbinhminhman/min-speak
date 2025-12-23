@@ -2,7 +2,7 @@
 FROM node:20-alpine AS base
 WORKDIR /app
 
-# Install dependencies
+# Install dependencies (need devDependencies for build)
 COPY package*.json ./
 RUN npm ci
 
@@ -14,14 +14,14 @@ RUN npm run build
 FROM node:20-alpine AS runner
 WORKDIR /app
 
-# Copy built application
-COPY --from=base /app/.next/standalone ./
-COPY --from=base /app/.next/static ./.next/static
-COPY --from=base /app/public ./public
-
 # Set environment
 ENV NODE_ENV=production
 ENV PORT=8080
+
+# Copy only necessary files from build stage
+COPY --from=base /app/.next/standalone ./
+COPY --from=base /app/.next/static ./.next/static
+COPY --from=base /app/public ./public
 
 # Expose port
 EXPOSE 8080
