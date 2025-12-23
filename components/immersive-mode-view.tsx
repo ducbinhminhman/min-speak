@@ -1,4 +1,4 @@
-import Image from "next/image"
+import { useEffect, useRef } from "react"
 import { Send } from "lucide-react"
 import { StopInstructionBanner } from "@/components/shared/stop-instruction-banner"
 import { cn } from "@/lib/utils"
@@ -24,16 +24,96 @@ export function ImmersiveModeView({
     return "idle"
   }
 
+  const currentState = getAvatarState()
+  
+  const idleVideoRef = useRef<HTMLVideoElement>(null)
+  const listeningVideoRef = useRef<HTMLVideoElement>(null)
+  const speakingVideoRef = useRef<HTMLVideoElement>(null)
+
+  // Smart prediction: Only keep current + predicted next video active
+  useEffect(() => {
+    const predictedNext = 
+      currentState === "idle" ? "listening" :
+      currentState === "listening" ? "speaking" : "idle"
+
+    // Manage idle video
+    if (idleVideoRef.current) {
+      if (currentState === "idle") {
+        idleVideoRef.current.play().catch(() => {})
+      } else if (predictedNext === "idle") {
+        idleVideoRef.current.play().catch(() => {})
+      } else {
+        idleVideoRef.current.pause()
+        idleVideoRef.current.currentTime = 0
+      }
+    }
+
+    // Manage listening video
+    if (listeningVideoRef.current) {
+      if (currentState === "listening") {
+        listeningVideoRef.current.play().catch(() => {})
+      } else if (predictedNext === "listening") {
+        listeningVideoRef.current.play().catch(() => {})
+      } else {
+        listeningVideoRef.current.pause()
+        listeningVideoRef.current.currentTime = 0
+      }
+    }
+
+    // Manage speaking video
+    if (speakingVideoRef.current) {
+      if (currentState === "speaking") {
+        speakingVideoRef.current.play().catch(() => {})
+      } else if (predictedNext === "speaking") {
+        speakingVideoRef.current.play().catch(() => {})
+      } else {
+        speakingVideoRef.current.pause()
+        speakingVideoRef.current.currentTime = 0
+      }
+    }
+  }, [currentState])
+
   return (
     <div className="relative min-h-svh overflow-hidden bg-black">
-      {/* Fullscreen Background Avatar */}
-      <Image
-        src={`/worldavatar/${getAvatarState()}.gif`}
-        alt="AI Avatar"
-        fill
-        className="object-cover"
-        priority
-        unoptimized
+      {/* Smart video management: current + predicted next only */}
+      <video
+        ref={idleVideoRef}
+        src="/worldavatar/idle.mp4"
+        loop
+        muted
+        playsInline
+        preload="auto"
+        className="absolute inset-0 w-full h-full object-cover"
+        style={{
+          zIndex: currentState === "idle" ? 1 : 0,
+          visibility: currentState === "idle" ? "visible" : "hidden",
+        }}
+      />
+      <video
+        ref={listeningVideoRef}
+        src="/worldavatar/listening.mp4"
+        loop
+        muted
+        playsInline
+        preload="auto"
+        className="absolute inset-0 w-full h-full object-cover"
+        style={{
+          zIndex: currentState === "listening" ? 1 : 0,
+          visibility: currentState === "listening" ? "visible" : "hidden",
+        }}
+      />
+      <video
+        ref={speakingVideoRef}
+        src="/worldavatar/speaking.mp4"
+        loop
+        muted
+        playsInline
+        preload="auto"
+        className="absolute inset-0 w-full h-full object-cover"
+        style={{
+          zIndex: currentState === "speaking" ? 1 : 0,
+          visibility: currentState === "speaking" ? "visible" : "hidden",
+        }}
       />
 
       {/* Dark overlay for better UI visibility */}
