@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react"
 import { Send } from "lucide-react"
+import { ConnectionStatusBadge } from "@/components/shared/connection-status-badge"
 import { cn } from "@/lib/utils/cn"
 
 interface ImmersiveModeViewProps {
@@ -149,22 +150,10 @@ export function ImmersiveModeView({
         {!isConnecting && !error && (
           <div className="px-6 pb-8">
             <div className="max-w-md mx-auto flex justify-center">
-              <div
-                className={cn(
-                  "inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium backdrop-blur-sm",
-                  connectionStatus === "connected"
-                    ? "bg-green-500/20 text-white"
-                    : "bg-gray-500/20 text-white"
-                )}
-              >
-                <div
-                  className={cn(
-                    "w-2 h-2 rounded-full",
-                    connectionStatus === "connected" ? "bg-green-500" : "bg-gray-500"
-                  )}
-                />
-                {isSpeaking ? "AI is speaking..." : "Listening..."}
-              </div>
+              <ConnectionStatusBadge 
+                status={connectionStatus}
+                label={isSpeaking ? "AI is speaking..." : "Listening..."}
+              />
             </div>
           </div>
         )}

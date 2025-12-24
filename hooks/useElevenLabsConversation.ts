@@ -1,5 +1,7 @@
 import { useConversation } from "@elevenlabs/react"
 import { useState, useEffect, useRef } from "react"
+import { ANIMATION } from "@/lib/config/ui-constants"
+import { getLastItem } from "@/lib/utils/array-helpers"
 import type { Message } from "@/lib/types"
 
 interface UseElevenLabsConversationProps {
@@ -14,18 +16,63 @@ export function useElevenLabsConversation({
   const [messages, setMessages] = useState<Message[]>([])
   const [isConnecting, setIsConnecting] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const messagesRef = useRef<Message[]>([])
-  const hasEndedRef = useRef(false)
+  const messageHistoryRef = useRef<Message[]>([])
+  const sessionEndedRef = useRef(false)
 
   const handleEndSession = async () => {
     console.log("🔚 [Live Chat] Ending session with", messages.length, "messages")
-    if (hasEndedRef.current) {
+    if (sessionEndedRef.current) {
       console.log("⚠️ [Live Chat] Session already ended, skipping...")
       return
     }
-    hasEndedRef.current = true
+    sessionEndedRef.current = true
     await conversation.endSession()
     onEndSession(messages)
+  }
+
+  // Helper: Add user message to history
+  const addUserMessage = (content: string) => {
+    setMessages((prev) => {
+      const updated = [
+        ...prev,
+        {
+          role: "user" as const,
+          content,
+          timestamp: new Date(),
+        },
+      ]
+      messageHistoryRef.current = updated
+      return updated
+    })
+  }
+
+  // Helper: Update or add agent message (supports streaming)
+  const updateAgentMessage = (content: string) => {
+    setMessages((prev) => {
+      const lastMsg = getLastItem(prev)
+      let updated: Message[]
+      
+      if (lastMsg && lastMsg.role === "agent") {
+        // Update existing agent message (streaming)
+        updated = [
+          ...prev.slice(0, -1),
+          { ...lastMsg, content },
+        ]
+      } else {
+        // Add new agent message
+        updated = [
+          ...prev,
+          {
+            role: "agent" as const,
+            content,
+            timestamp: new Date(),
+          },
+        ]
+      }
+      
+      messageHistoryRef.current = updated
+      return updated
+    })
   }
 
   const conversation = useConversation({
@@ -45,64 +92,30 @@ export function useElevenLabsConversation({
     },
     onDisconnect: () => {
       console.log("🔌 Disconnected from ElevenLabs Agent")
-      console.log("   hasEndedRef.current:", hasEndedRef.current)
-      console.log("   messagesRef.current.length:", messagesRef.current.length)
-      // If disconnected by server (end_call tool), trigger analysis
+      console.log("   sessionEndedRef.current:", sessionEndedRef.current)
+      console.log("   messageHistoryRef.current.length:", messageHistoryRef.current.length)
+      
+      // Workaround: Small delay to allow server-side disconnect event to propagate
+      // before triggering analysis (prevents race condition)
       setTimeout(() => {
-        if (!hasEndedRef.current) {
-          console.log("🔄 Server ended call, triggering analysis with", messagesRef.current.length, "messages")
-          onEndSession(messagesRef.current)
-          hasEndedRef.current = true
+        if (!sessionEndedRef.current) {
+          console.log("🔄 Server ended call, triggering analysis with", messageHistoryRef.current.length, "messages")
+          onEndSession(messageHistoryRef.current)
+          sessionEndedRef.current = true
         }
-      }, 100)
+      }, ANIMATION.SESSION_END_DELAY_MS)
     },
     onMessage: (message) => {
       console.log("📨 Message:", message)
 
       // Handle user messages
       if (message.source === "user" && message.message) {
-        setMessages((prev) => {
-          const updated = [
-            ...prev,
-            {
-              role: "user" as const,
-              content: message.message,
-              timestamp: new Date(),
-            },
-          ]
-          messagesRef.current = updated
-          return updated
-        })
+        addUserMessage(message.message)
       }
 
-      // Handle agent messages
+      // Handle agent messages (streaming support)
       if (message.source === "ai" && message.message) {
-        setMessages((prev) => {
-          const lastMsg = prev[prev.length - 1]
-          let updated: Message[]
-          if (lastMsg && lastMsg.role === "agent") {
-            // Update last agent message (streaming)
-            updated = [
-              ...prev.slice(0, -1),
-              {
-                ...lastMsg,
-                content: message.message,
-              },
-            ]
-          } else {
-            // Add new agent message
-            updated = [
-              ...prev,
-              {
-                role: "agent" as const,
-                content: message.message,
-                timestamp: new Date(),
-              },
-            ]
-          }
-          messagesRef.current = updated
-          return updated
-        })
+        updateAgentMessage(message.message)
       }
     },
     onError: (error) => {

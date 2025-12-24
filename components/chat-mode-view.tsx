@@ -1,6 +1,7 @@
 import { useRef, useEffect } from "react"
 import { Send, Mic, MicOff } from "lucide-react"
 import { Avatar } from "@/components/avatar"
+import { ConnectionStatusBadge } from "@/components/shared/connection-status-badge"
 import { cn } from "@/lib/utils/cn"
 import type { Message } from "@/lib/types"
 
@@ -137,22 +138,7 @@ export function ChatModeView({
         <div className="px-6 pb-8 pt-4">
           <div className="max-w-2xl mx-auto flex gap-3 justify-center items-center">
             <div className="text-center">
-              <div
-                className={cn(
-                  "inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium",
-                  connectionStatus === "connected"
-                    ? "bg-green-500/20 text-green-700"
-                    : "bg-gray-500/20 text-gray-700"
-                )}
-              >
-                <div
-                  className={cn(
-                    "w-2 h-2 rounded-full",
-                    connectionStatus === "connected" ? "bg-green-500" : "bg-gray-500"
-                  )}
-                />
-                {connectionStatus === "connected" ? "Connected" : "Disconnected"}
-              </div>
+              <ConnectionStatusBadge status={connectionStatus} />
             </div>
 
             <button

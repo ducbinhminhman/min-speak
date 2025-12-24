@@ -6,7 +6,8 @@ import { LiveChatConversation } from "@/components/live-chat-conversation"
 import { ConversationAnalysisScreen } from "@/components/conversation-analysis-screen"
 import { ModeSelectionModal } from "@/components/mode-selection-modal"
 import { MIN_MESSAGES_FOR_ANALYSIS } from "@/lib/config/constants"
-import type { Message, ConversationAnalysisData } from "@/lib/types"
+import { convertToApiFormat } from "@/lib/services/conversation.service"
+import type { Message, ConversationAnalysis } from "@/lib/types"
 
 export default function Home() {
   const [currentScreen, setCurrentScreen] = useState<"landing" | "modeSelection" | "conversation" | "analysis">("landing")

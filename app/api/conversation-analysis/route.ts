@@ -27,10 +27,10 @@ export async function POST(request: NextRequest) {
 
     return Response.json(analysisData)
 
-  } catch (parseError) {
-    console.error('❌ [Conversation Analysis] Parse error:', parseError)
+  } catch (error) {
+    console.error('❌ [Conversation Analysis] Error:', error)
     
-    // Return fallback analysis
+    // Return fallback analysis on any error
     return Response.json({
       ...FALLBACK_FEEDBACK,
       overallStrengths: [
@@ -38,10 +38,6 @@ export async function POST(request: NextRequest) {
         "You engaged in conversation",
         "You're building confidence"
       ],
-    })
-  } catch (error) {
-    return handleApiError(error, 'Conversation Analysis', {
-      ...FALLBACK_FEEDBACK,
       summary: "Keep practicing! Every conversation helps you improve."
     })
   }
