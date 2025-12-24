@@ -1,8 +1,8 @@
 import { useRef, useEffect } from "react"
 import { Send, Mic, MicOff } from "lucide-react"
 import { Avatar } from "@/components/avatar"
-import { cn } from "@/lib/utils"
-import type { Message } from "@/hooks/useElevenLabsConversation"
+import { cn } from "@/lib/utils/cn"
+import type { Message } from "@/lib/types"
 
 interface ChatModeViewProps {
   messages: Message[]

@@ -5,39 +5,13 @@ import { HeroLanding } from "@/components/hero-landing"
 import { LiveChatConversation } from "@/components/live-chat-conversation"
 import { ConversationAnalysisScreen } from "@/components/conversation-analysis-screen"
 import { ModeSelectionModal } from "@/components/mode-selection-modal"
-
-interface Message {
-  role: "user" | "agent"
-  content: string
-  timestamp: Date
-}
-
-interface ConversationAnalysisData {
-  sentenceAnalysis: {
-    original: string
-    improved: string
-    issues: string[]
-    tips: string
-  }[]
-  overallStrengths: string[]
-  areasToImprove: {
-    area: string
-    explanation: string
-    examples: string[]
-  }[]
-  vocabularySuggestions: {
-    word: string
-    meaning: string
-    example: string
-    context: string
-  }[]
-  summary: string
-}
+import { MIN_MESSAGES_FOR_ANALYSIS } from "@/lib/config/constants"
+import type { Message, ConversationAnalysisData } from "@/lib/types"
 
 export default function Home() {
   const [currentScreen, setCurrentScreen] = useState<"landing" | "modeSelection" | "conversation" | "analysis">("landing")
   const [subMode, setSubMode] = useState<"chat" | "immersive" | null>(null)
-  const [conversationAnalysisData, setConversationAnalysisData] = useState<ConversationAnalysisData | null>(null)
+  const [conversationAnalysisData, setConversationAnalysisData] = useState<ConversationAnalysis | null>(null)
   const [isGeneratingAnalysis, setIsGeneratingAnalysis] = useState(false)
 
   const handleStartPractice = () => {
@@ -56,7 +30,7 @@ export default function Home() {
   const handleEndSession = async (messages: Message[]) => {
     const userMessages = messages.filter(msg => msg.role === "user")
     
-    if (userMessages.length < 2) {
+    if (userMessages.length < MIN_MESSAGES_FOR_ANALYSIS) {
       console.log("⚠️ [Live Chat] Too few messages for analysis, skipping...")
       setCurrentScreen("landing")
       setSubMode(null)
@@ -69,11 +43,7 @@ export default function Home() {
     setCurrentScreen("analysis")
     
     try {
-      const conversationHistory = messages.map(msg => ({
-        role: msg.role === "agent" ? "assistant" : "user",
-        content: msg.content,
-        timestamp: msg.timestamp,
-      }))
+      const conversationHistory = convertToApiFormat(messages)
 
       console.log("📤 [Live Chat] Sending to analysis API...")
       
@@ -100,19 +70,10 @@ export default function Home() {
     } catch (error) {
       console.error("❌ [Live Chat] Analysis failed:", error)
       
+      // Use fallback feedback from constants
+      const { FALLBACK_FEEDBACK } = await import('@/lib/config/constants')
       setConversationAnalysisData({
-        sentenceAnalysis: [],
-        overallStrengths: [
-          "You practiced speaking with AI in real-time",
-          "You engaged in natural conversation",
-          "You're building confidence through practice"
-        ],
-        areasToImprove: [{
-          area: "Keep practicing",
-          explanation: "Continue having conversations to improve fluency and confidence",
-          examples: ["Practice daily", "Speak naturally", "Don't worry about mistakes"]
-        }],
-        vocabularySuggestions: [],
+        ...FALLBACK_FEEDBACK,
         summary: "Great job completing your first live chat! Keep practicing to build fluency and confidence."
       })
     } finally {

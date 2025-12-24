@@ -4,7 +4,7 @@ import { useState } from "react"
 import { useElevenLabsConversation } from "@/hooks/useElevenLabsConversation"
 import { ImmersiveModeView } from "@/components/immersive-mode-view"
 import { ChatModeView } from "@/components/chat-mode-view"
-import type { Message } from "@/hooks/useElevenLabsConversation"
+import type { Message } from "@/lib/types"
 
 interface LiveChatConversationProps {
   onEndSession: (messages: Message[]) => void

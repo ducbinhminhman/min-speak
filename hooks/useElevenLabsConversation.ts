@@ -1,11 +1,6 @@
 import { useConversation } from "@elevenlabs/react"
 import { useState, useEffect, useRef } from "react"
-
-export interface Message {
-  role: "user" | "agent"
-  content: string
-  timestamp: Date
-}
+import type { Message } from "@/lib/types"
 
 interface UseElevenLabsConversationProps {
   onEndSession: (messages: Message[]) => void
