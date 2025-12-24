@@ -1,7 +1,6 @@
 import { useRef, useEffect } from "react"
 import { Send, Mic, MicOff } from "lucide-react"
 import { Avatar } from "@/components/avatar"
-import { StopInstructionBanner } from "@/components/shared/stop-instruction-banner"
 import { cn } from "@/lib/utils"
 import type { Message } from "@/hooks/useElevenLabsConversation"
 
@@ -57,10 +56,6 @@ export function ChatModeView({
             End & Analyze
           </button>
         </div>
-
-        {/* Stop Instruction 
-        <StopInstructionBanner maxWidth="2xl" />
-        */}
 
         {/* Main Content */}
         <div className="flex-1 overflow-y-auto px-6 pb-4">

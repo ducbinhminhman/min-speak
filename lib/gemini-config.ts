@@ -7,12 +7,6 @@
 // TYPES & INTERFACES
 // ============================================================================
 
-interface ConversationMessage {
-  role: 'user' | 'assistant'
-  content: string
-  timestamp: Date
-}
-
 export interface GeminiModelConfig {
   name: string
   maxOutputTokens: number
@@ -20,17 +14,6 @@ export interface GeminiModelConfig {
   topP?: number
   topK?: number
   responseMimeType?: string
-}
-
-export interface CacheConfig {
-  enabled: boolean
-  ttl: string // e.g., '3600s' for 1 hour
-  minHistoryLength: number // Minimum conversation length to enable caching
-}
-
-export interface PromptTemplate {
-  system: string
-  fallback: string
 }
 
 export interface CostEstimate {
@@ -195,26 +178,7 @@ Guidelines:
 Be specific, practical, and encouraging. Help them speak more naturally and confidently.
 
 Return ONLY valid JSON, no markdown formatting or additional text.`,
-
-  /**
-   * Fallback prompt when AI Studio fetch fails
-   */
-  FALLBACK: {
-    analysis: `You are an expert English language coach analyzing conversations.
-Provide helpful, encouraging feedback with specific pronunciation tips and phrase improvements.
-Focus on actionable advice that learners can immediately apply.`,
-  },
 } as const
-
-// ============================================================================
-// CACHE CONFIGURATION (Not used in Live Chat mode)
-// ============================================================================
-
-export const CACHE_CONFIG: CacheConfig = {
-  enabled: false,
-  ttl: '3600s',
-  minHistoryLength: 2,
-}
 
 // ============================================================================
 // FALLBACK FEEDBACK DATA
@@ -241,33 +205,11 @@ export const FALLBACK_FEEDBACK = {
 // ============================================================================
 
 /**
- * Get complete configuration for conversation analysis API
- * @param conversationHistory - Conversation history to analyze
- * @returns Configuration object ready to use with Gemini API
- */
-export function getConversationAnalysisConfig(conversationHistory: ConversationMessage[]) {
-  const transcript = formatConversationTranscript(conversationHistory)
-  const prompt = PROMPTS.CONVERSATION_DETAILED_ANALYSIS.replace('{CONVERSATION}', transcript)
-
-  return {
-    model: MODELS.ANALYSIS,
-    prompt,
-    generationConfig: {
-      maxOutputTokens: MODELS.ANALYSIS.maxOutputTokens,
-      temperature: MODELS.ANALYSIS.temperature,
-      topP: MODELS.ANALYSIS.topP,
-      responseMimeType: MODELS.ANALYSIS.responseMimeType,
-    },
-    fallbackFeedback: FALLBACK_FEEDBACK,
-  }
-}
-
-/**
  * Format conversation history into a readable transcript
- * @param history - Array of conversation messages
+ * @param history - Array of conversation messages with role and content
  * @returns Formatted transcript string
  */
-export function formatConversationTranscript(history: ConversationMessage[]): string {
+export function formatConversationTranscript(history: Array<{ role: string; content: string }>): string {
   if (!history || history.length === 0) {
     return ''
   }
@@ -275,36 +217,6 @@ export function formatConversationTranscript(history: ConversationMessage[]): st
   return history
     .map((msg) => `${msg.role === "user" ? "User" : "Assistant"}: ${msg.content}`)
     .join("\n")
-}
-
-/**
- * Build full prompt for conversation with context
- * @param systemPrompt - System instruction prompt
- * @param conversationHistory - Previous conversation messages
- * @param newMessage - New user message
- * @returns Complete prompt string
- */
-export function buildConversationPrompt(
-  systemPrompt: string,
-  conversationHistory: ConversationMessage[] | undefined,
-  newMessage: string
-): string {
-  const conversationContext = conversationHistory ? formatConversationTranscript(conversationHistory) : ''
-  
-  if (conversationContext) {
-    return `${systemPrompt}\n\nPrevious conversation:\n${conversationContext}\n\nUser: ${newMessage}\n\nRespond naturally:`
-  }
-  
-  return `${systemPrompt}\n\nUser: ${newMessage}\n\nRespond naturally:`
-}
-
-/**
- * Get model name for logging/debugging
- * @param type - Type of API ('analysis')
- * @returns Model name string
- */
-export function getModelName(type: 'analysis'): string {
-  return MODELS.ANALYSIS.name
 }
 
 // ============================================================================
@@ -392,11 +304,4 @@ export function logCost(apiName: string, cost: CostEstimate | ReturnType<typeof 
   }
 }
 
-/**
- * Check if user is within free tier limits
- * @param requestCount - Number of requests made today
- * @returns Boolean indicating if still in free tier
- */
-export function isWithinFreeTier(requestCount: number): boolean {
-  return requestCount < PRICING.GEMINI.FREE_TIER.requestsPerDay
-}
+

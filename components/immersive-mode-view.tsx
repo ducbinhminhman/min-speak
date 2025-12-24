@@ -1,6 +1,5 @@
 import { useEffect, useRef } from "react"
 import { Send } from "lucide-react"
-import { StopInstructionBanner } from "@/components/shared/stop-instruction-banner"
 import { cn } from "@/lib/utils"
 
 interface ImmersiveModeViewProps {
@@ -131,10 +130,6 @@ export function ImmersiveModeView({
             End & Analyze
           </button>
         </div>
-
-        {/* Stop Instruction
-        <StopInstructionBanner maxWidth="md" />
-         */}
 
         {/* Spacer */}
         <div className="flex-1" />
