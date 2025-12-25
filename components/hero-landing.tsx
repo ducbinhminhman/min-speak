@@ -20,7 +20,7 @@ export function HeroLanding({ onStartPractice }: HeroLandingProps) {
       <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
       
       {/* Content */}
-      <div className="relative z-10 max-w-4xl mx-auto px-6 py-2 text-center">
+      <div className="relative z-10 max-w-4xl mx-auto px-6 py-10 text-center">
 
         {/* Main Headline */}
         <h1 className="text-4xl md:text-7xl font-bold text-white mb-6 leading-tight">

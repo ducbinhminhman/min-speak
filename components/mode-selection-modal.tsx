@@ -34,7 +34,7 @@ export function ModeSelectionModal({ onSelectMode, onCancel }: ModeSelectionModa
 
 
       {/* Content */}
-      <div className="relative z-10 flex-1 flex items-center justify-center px-6 pb-20 md:pb-0">
+      <div className="relative z-10 flex-1 flex items-center justify-center px-6 pb-20 md:pb-20">
         <div className="max-w-6xl mx-auto w-full">
         {/* Title */}
         <div className="text-center mb-12 pt-6 md:pt-0">
