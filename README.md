@@ -141,9 +141,9 @@ After each practice session (minimum 2 user messages), receive comprehensive AI-
 
 ### AI & Voice
 - **Conversational AI**: ElevenLabs Conversational AI (WebRTC streaming)
-- **Speech Analysis**: Google Gemini 2.0 Flash (conversation analysis & feedback)
+- **Speech Analysis**: **Google Vertex AI** with Gemini 2.5 Flash (enterprise-grade conversation analysis)
 - **Voice SDK**: `@elevenlabs/react` for seamless integration
-- **AI SDK**: Vercel AI SDK + Google Generative AI
+- **Cloud Infrastructure**: Google Cloud Platform (Vertex AI API)
 
 ### Infrastructure
 - **Deployment**: Google Cloud Run (containerized Next.js app)
@@ -161,7 +161,8 @@ Before running **thương**, ensure you have:
 - **Node.js 20.9.0+** ([download here](https://nodejs.org/))
 - **ElevenLabs API Key** ([get one here](https://elevenlabs.io/app/settings/api-keys))
 - **ElevenLabs Agent ID** ([create an agent](https://elevenlabs.io/app/conversational-ai))
-- **Google Gemini API Key** ([get one here](https://aistudio.google.com/apikey))
+- **Google Cloud Project** with Vertex AI enabled
+- **Vertex AI API Key** ([create in GCP Console](https://console.cloud.google.com/apis/credentials))
 
 ### Installation
 
@@ -181,19 +182,39 @@ npm install
 Create a `.env.local` file in the root directory:
 
 ```env
-# Google Gemini API (for conversation analysis)
-GEMINI_API_KEY=your_gemini_api_key_here
+# ============================================================================
+# VERTEX AI CONFIGURATION (Enterprise Mode)
+# ============================================================================
 
-# ElevenLabs API (for voice conversation)
+# Vertex AI API Key (from Google Cloud Console > APIs & Services > Credentials)
+VERTEX_AI_API_KEY=your_vertex_ai_api_key_here
+
+# Google Cloud Project ID
+GOOGLE_CLOUD_PROJECT=your_project_id_here
+
+# Vertex AI Region (closest to Vietnam)
+GOOGLE_CLOUD_LOCATION=asia-southeast1
+
+# ============================================================================
+# ELEVENLABS TTS CONFIGURATION
+# ============================================================================
+
+# ElevenLabs API Key (for voice conversation)
 ELEVENLABS_API_KEY=your_elevenlabs_api_key_here
+
+# ElevenLabs Voice ID
 ELEVENLABS_VOICE_ID=your_elevenlabs_voice_id_here  # Default: CwhRBWXzGAHq8TQ4Fs17
 
-# ElevenLabs Agent (conversational AI agent - "Minh")
+# ElevenLabs Agent ID (conversational AI agent - "Minh")
 # Create at: https://elevenlabs.io/app/conversational-ai
 NEXT_PUBLIC_ELEVENLABS_AGENT_ID=your_agent_id_here
 ```
 
-> **💡 Tip**: When creating your ElevenLabs agent, name it "Minh" and use the prompt structure from the documentation to get the best learning experience with bilingual support and reflective listening.
+> **💡 Vertex AI Setup**: 
+> 1. Create a Google Cloud Project at [console.cloud.google.com](https://console.cloud.google.com)
+> 2. Enable Vertex AI API in your project
+> 3. Create API key in **APIs & Services > Credentials**
+> 4. Use `asia-southeast1` region (closest to Vietnam, lower latency)
 
 4. **Start development server**
 ```bash
@@ -212,7 +233,7 @@ Navigate to [http://localhost:3000](http://localhost:3000) in your browser.
 Open **thương** and you'll see the beautiful hero landing page with background animations.
 
 ### Step 2: Choose Your Mode
-Click **"Bắt đầu luyện nói"** (Start Practice) and select your preferred learning mode:
+Click **"Start Practice"** and select your preferred learning mode:
 - **Chat Mode**: See conversation history with message bubbles
 - **Immersive Mode**: Full-screen avatar experience
 
@@ -222,7 +243,7 @@ Click **"Bắt đầu luyện nói"** (Start Practice) and select your preferred
 - Have a real conversation about any topic you're interested in
 
 ### Step 4: End Session
-- Click **"Kết thúc"** (End Session) when you're ready to finish
+- Click **"End"** when you're ready to finish
 - The app requires at least **2 user messages** for meaningful analysis
 
 ### Step 5: Review Feedback
@@ -309,11 +330,21 @@ All API routes follow consistent patterns:
 
 ### AI Integration
 
-#### **Gemini AI** (`lib/config/gemini.ts`)
-- **Model**: `gemini-2.0-flash-exp` (fast, cost-effective)
-- **JSON mode**: Structured responses for reliable parsing
-- **Detailed prompts**: Comprehensive instructions for consistent analysis quality
-- **Fallback data**: Graceful degradation if API fails
+#### **Google Vertex AI** (Enterprise-Grade AI)
+- **Model**: `gemini-2.5-flash` via Vertex AI API
+- **Infrastructure**: Google Cloud Platform with enterprise security
+- **Authentication**: API key-based access
+- **Benefits**: 
+  - Production-ready deployment
+  - Enterprise credibility and compliance
+  - Better model availability and versioning
+  - Scalable infrastructure
+
+#### **Conversation Analysis Pipeline**
+- **Structured JSON responses**: Type-safe parsing with fallback handling
+- **Comprehensive prompts**: Detailed instructions for consistent quality
+- **Error resilience**: Graceful degradation with fallback feedback
+- **Markdown cleaning**: Automatic removal of code blocks from responses
 
 #### **ElevenLabs** (`hooks/useElevenLabsConversation.ts`)
 - **WebRTC streaming**: Ultra-low latency voice transmission
@@ -336,18 +367,21 @@ All API routes follow consistent patterns:
 - **Pricing**: ~$0.003 per character beyond free tier
 - **Typical session**: ~500-1000 characters (2-5 minutes of conversation)
 
-### Google Gemini API
-- **Free Tier**: 1,500 requests per day
-- **Token limits**: 32K input, 1K output (per request)
-- **Analysis cost**: ~500-1000 tokens per conversation analysis
+### Google Vertex AI
+- **Free Tier**: 60 requests per minute (sufficient for individual use)
+- **Model**: Gemini 2.5 Flash via Vertex AI
+- **Region**: Asia Southeast 1 (Singapore) - closest to Vietnam
+- **Typical analysis**: ~1000-2000 tokens per conversation
 - **Pricing beyond free tier**: $0.075 per 1M input tokens, $0.30 per 1M output tokens
+- **Enterprise features**: Production-grade infrastructure, better reliability
 
 ### Cost Monitoring
-All API calls log estimated costs to browser console:
+Track API usage in browser console (development mode):
 ```
-📊 [Conversation Analysis] Estimated cost: $0.001
 🎤 [ElevenLabs] Session used ~750 characters
 ```
+
+**Production Monitoring**: Use Google Cloud Console to track Vertex AI API usage and costs in real-time.
 
 ---
 
@@ -438,13 +472,19 @@ you MUST immediately call the system tool named `end_call`.
 **thương** is deployed on Google Cloud Run for scalability and reliability:
 
 ```bash
-# Deploy to Google Cloud Run
+# Deploy to Google Cloud Run with Vertex AI
 gcloud run deploy thuong \
   --source . \
   --region asia-southeast1 \
   --allow-unauthenticated \
-  --set-env-vars "GEMINI_API_KEY=your_key,ELEVENLABS_API_KEY=your_key,ELEVENLABS_VOICE_ID=your_voice_id,NEXT_PUBLIC_ELEVENLABS_AGENT_ID=your_agent_id"
+  --set-env-vars "VERTEX_AI_API_KEY=your_key,GOOGLE_CLOUD_PROJECT=your_project_id,GOOGLE_CLOUD_LOCATION=asia-southeast1,ELEVENLABS_API_KEY=your_key,ELEVENLABS_VOICE_ID=your_voice_id,NEXT_PUBLIC_ELEVENLABS_AGENT_ID=your_agent_id"
 ```
+
+**Why Vertex AI for Deployment:**
+- ✅ Enterprise-grade infrastructure
+- ✅ Better model availability and reliability
+- ✅ Integrated with Google Cloud ecosystem
+- ✅ Production-ready authentication and monitoring
 
 ### Vercel (Alternative)
 
@@ -494,7 +534,8 @@ Contributions are welcome! If you'd like to improve **thương**:
 - [Next.js 16 Docs](https://nextjs.org/docs)
 - [React 19 Docs](https://react.dev)
 - [ElevenLabs Conversational AI](https://elevenlabs.io/docs/conversational-ai)
-- [Google Gemini API](https://ai.google.dev/docs)
+- [Google Vertex AI](https://cloud.google.com/vertex-ai/docs)
+- [Gemini API on Vertex AI](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/gemini)
 - [shadcn/ui Components](https://ui.shadcn.com)
 
 ### Tutorials & Guides
@@ -518,8 +559,8 @@ This project is licensed under the **MIT License** - see the LICENSE file for de
 
 ## 🙏 Acknowledgments
 
+- **Google Cloud** for Vertex AI platform and enterprise-grade Gemini models
 - **ElevenLabs** for providing cutting-edge conversational AI technology
-- **Google** for the powerful Gemini AI models
 - **Vercel** for Next.js and excellent deployment infrastructure
 - **shadcn** for the beautiful, accessible UI component library
 - The **Vietnamese English learning community** for inspiration
