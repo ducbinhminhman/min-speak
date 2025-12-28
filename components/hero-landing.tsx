@@ -1,5 +1,6 @@
 "use client"
-import { BsFlower1 } from "react-icons/bs";
+import { BsFlower1 } from "react-icons/bs"
+import Image from "next/image"
 
 
 interface HeroLandingProps {
@@ -23,19 +24,23 @@ const FEATURES = [
 
 export function HeroLanding({ onStartPractice }: HeroLandingProps) {
   return (
-    <div 
-      className="min-h-svh flex items-center justify-center relative overflow-hidden"
-      style={{
-        backgroundImage: "url('/background/summer.png')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
-    >
+    <div className="min-h-svh flex items-center justify-center relative overflow-hidden">
+      {/* Background Image */}
+      <Image
+        src="/background/summer.png"
+        alt="Summer background"
+        fill
+        priority
+        quality={85}
+        className="object-cover"
+        sizes="100vw"
+      />
+      
       {/* Dark overlay */}
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] z-[1]" />
       
       {/* Content */}
-      <div className="relative z-10 max-w-4xl mx-auto px-6 py-10 text-center">
+      <div className="relative z-[2] max-w-4xl mx-auto px-6 py-10 text-center">
 
         {/* Main Headline */}
         <h1 className="text-4xl md:text-5xl font-bold text-white mb-6 md:mb-2 leading-tight">

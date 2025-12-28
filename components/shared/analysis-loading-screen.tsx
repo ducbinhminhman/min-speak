@@ -1,4 +1,5 @@
 import { BookOpen } from "lucide-react"
+import Image from "next/image"
 import { ANIMATION, TIMINGS } from "@/lib/config/ui-constants"
 
 interface AnalysisLoadingScreenProps {
@@ -9,18 +10,21 @@ export function AnalysisLoadingScreen({ isLoading }: AnalysisLoadingScreenProps)
   if (!isLoading) return null
 
   return (
-    <div 
-      className="flex flex-col items-center justify-center min-h-svh px-6 relative"
-      style={{
-        backgroundImage: "url('/background/night.png')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
-    >
-      {/* Dark overlay */}
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
+    <div className="flex flex-col items-center justify-center min-h-svh px-6 relative">
+      {/* Background Image */}
+      <Image
+        src="/background/night.png"
+        alt="Night background"
+        fill
+        quality={85}
+        className="object-cover"
+        sizes="100vw"
+      />
       
-      <div className="relative z-10 flex flex-col items-center text-center max-w-md">
+      {/* Dark overlay */}
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px] z-[1]" />
+      
+      <div className="relative z-[2] flex flex-col items-center text-center max-w-md">
         {/* Animated Icon */}
         <div className="mb-8 relative">
           <div className="w-24 h-24 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center animate-pulse">
