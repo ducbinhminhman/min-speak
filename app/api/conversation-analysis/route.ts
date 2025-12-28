@@ -106,7 +106,7 @@ Return ONLY valid JSON, no markdown formatting or additional text.`
         }],
         generationConfig: {
           temperature: 0.7,
-          maxOutputTokens: 2048,
+          maxOutputTokens: 16000,
           responseMimeType: 'application/json'
         }
       })
@@ -114,7 +114,6 @@ Return ONLY valid JSON, no markdown formatting or additional text.`
 
     if (!response.ok) {
       const error = await response.text()
-      console.error('❌ [Vertex AI] Error:', error)
       throw new Error(`Vertex AI API error: ${response.status} - ${error}`)
     }
 
@@ -129,15 +128,12 @@ Return ONLY valid JSON, no markdown formatting or additional text.`
     try {
       analysisData = JSON.parse(cleanedText)
     } catch (parseError) {
-      console.error('❌ [Vertex AI] JSON parse failed:', parseError)
       analysisData = FALLBACK_FEEDBACK
     }
 
     return Response.json(analysisData)
 
   } catch (error) {
-    console.error('❌ [Conversation Analysis] Error:', error)
-    
     // Return fallback analysis on any error
     return Response.json({
       ...FALLBACK_FEEDBACK,
