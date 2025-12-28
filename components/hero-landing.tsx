@@ -27,7 +27,7 @@ export function HeroLanding({ onStartPractice }: HeroLandingProps) {
     <div className="min-h-svh flex items-center justify-center relative overflow-hidden">
       {/* Background Image */}
       <Image
-        src="/background/summer.png"
+        src="/background/summer.webp"
         alt="Summer background"
         fill
         priority

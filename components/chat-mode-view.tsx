@@ -1,6 +1,5 @@
 import { useRef, useEffect } from "react"
 import { Send, Mic, MicOff } from "lucide-react"
-import Image from "next/image"
 import { Avatar } from "@/components/avatar"
 import { ConnectionStatusBadge } from "@/components/shared/connection-status-badge"
 import { cn } from "@/lib/utils/cn"
@@ -34,22 +33,19 @@ export function ChatModeView({
   }, [messages])
 
   return (
-    <div className="flex flex-col min-h-svh relative">
-      {/* Background Image */}
-      <Image
-        src="/background/sea.png"
-        alt="Sea background"
-        fill
-        quality={85}
-        className="object-cover"
-        sizes="100vw"
-      />
-      
+    <div
+      className="flex flex-col min-h-svh relative"
+      style={{
+        backgroundImage: "url('/background/sea.webp')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
       {/* Dark overlay */}
-      <div className="absolute inset-0 bg-black/30 backdrop-blur-[1px] z-[1]" />
+      <div className="absolute inset-0 bg-black/30 backdrop-blur-[1px]" />
 
       {/* Content */}
-      <div className="relative z-[2] flex flex-col min-h-svh">
+      <div className="relative z-10 flex flex-col min-h-svh">
         {/* Header */}
         <div className="w-full px-6 py-4 flex justify-between items-center">
           <div className="text-sm md:text-lg font-medium text-white">Live Chat</div>

@@ -36,17 +36,14 @@ function ModeCard({
       className={`w-2/3 md:w-full md:h-[480px] group relative overflow-hidden rounded-3xl bg-gradient-to-br ${gradientFrom} ${gradientTo} backdrop-blur-md border-2 border-white/30 py-3 px-4 md:p-8 transition-all duration-300 hover:scale-105 hover:border-white/60 hover:shadow-2xl`}
     >
       {/* Preview Image */}
-      <div className="hidden md:block relative h-64 mb-6 rounded-2xl overflow-hidden bg-white/10">
-        <Image
-          src={previewImage}
-          alt={`${title} preview`}
-          fill
-          loading="eager"
-          quality={75}
-          className="object-cover"
-          sizes="(max-width: 768px) 0vw, 50vw"
-        />
-      </div>
+      <div
+        className="hidden md:block relative h-64 mb-6 rounded-2xl overflow-hidden bg-white/10"
+        style={{
+          backgroundImage: `url('${previewImage}')`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
 
       {/* Content */}
       <div className="text-center md:text-left">
@@ -79,25 +76,19 @@ function ModeCard({
 
 export function ModeSelectionModal({ onSelectMode, onCancel }: ModeSelectionModalProps) {
   return (
-    <div className="min-h-svh flex flex-col relative">
-      {/* Background Image */}
-      <Image
-        src="/background/forest.png"
-        alt="Forest background"
-        fill
-        priority
-        quality={85}
-        className="object-cover"
-        sizes="100vw"
-        placeholder="blur"
-        blurDataURL="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9IiMyZDRhMmIiLz48L3N2Zz4="
-      />
-      
+    <div
+      className="min-h-svh flex flex-col relative"
+      style={{
+        backgroundImage: "url('/background/forest.webp')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
       {/* Dark overlay */}
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px] z-[1]" />
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
       
       {/* Back button */}
-      <div className="relative z-[3] px-6 pt-6">
+      <div className="relative z-20 px-6 pt-6">
         <button
           onClick={onCancel}
           className="flex items-center gap-2 text-white/90 hover:text-white"
@@ -108,7 +99,7 @@ export function ModeSelectionModal({ onSelectMode, onCancel }: ModeSelectionModa
 
 
       {/* Content */}
-      <div className="relative z-[2] flex-1 flex items-center justify-center px-6 pb-20 md:pb-20">
+      <div className="relative z-10 flex-1 flex items-center justify-center px-6 pb-20 md:pb-20">
         <div className="max-w-6xl mx-auto w-full">
         {/* Title */}
         <div className="text-center mb-12 pt-6 md:pt-0">
@@ -128,7 +119,7 @@ export function ModeSelectionModal({ onSelectMode, onCancel }: ModeSelectionModa
             features={["Message history", "Visual feedback"]}
             gradientFrom="from-blue-500/90"
             gradientTo="to-blue-600/90"
-            previewImage="/background/chat.png"
+            previewImage="/background/chat.webp"
             icon={MessageSquare}
             onClick={() => onSelectMode("chat")}
           />
@@ -139,7 +130,7 @@ export function ModeSelectionModal({ onSelectMode, onCancel }: ModeSelectionModa
             features={["Distraction-free", "Natural flow"]}
             gradientFrom="from-purple-500/90"
             gradientTo="to-purple-600/90"
-            previewImage="/background/immersive.png"
+            previewImage="/background/immersive.webp"
             icon={Globe}
             onClick={() => onSelectMode("immersive")}
           />

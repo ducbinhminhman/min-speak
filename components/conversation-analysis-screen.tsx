@@ -2,7 +2,6 @@
 
 import { ArrowLeft, CheckCircle2, AlertCircle, BookOpen, Lightbulb } from "lucide-react"
 import { IoChevronBack } from "react-icons/io5"
-import Image from "next/image"
 import { AnalysisLoadingScreen } from "@/components/shared/analysis-loading-screen"
 
 interface SentenceAnalysis {
@@ -51,22 +50,19 @@ export function ConversationAnalysisScreen({
   }
 
   return (
-    <div className="min-h-svh relative">
-      {/* Background Image */}
-      <Image
-        src="/background/night.png"
-        alt="Night background"
-        fill
-        quality={85}
-        className="object-cover"
-        sizes="100vw"
-      />
-      
+    <div
+      className="min-h-svh relative"
+      style={{
+        backgroundImage: "url('/background/night.webp')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
       {/* Dark overlay */}
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px] z-[1]" />
+      <div className="absolute inset-0 bg-black/40 backdrop-blur-[1px]" />
       
       {/* Content */}
-      <div className="relative z-[2] min-h-svh">
+      <div className="relative z-10 min-h-svh">
       {/* Header */}
       <div className="sticky top-0 z-[3] backdrop-blur-md bg-black/30 border-b border-white/20">
         <div className="relative px-6 py-1  md:py-0 flex items-center  max-w-4xl mx-auto">
